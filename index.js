@@ -95,21 +95,20 @@ const actualPaht = `${curdPath}/apple.txt`;
 
 // console.log(curdPath);
 
-
 // app.get("", (req, res) => {
 //     console.log(req.query);
 //     res.send(`
 //     <a href='/about'>Click me</a>
 //     `);
 //   });
-  
+
 //   app.get("/about", (req, res) => {
 //     res.send(`
 //     <input type= "text" placeholder= "sandesh" value = ${req.query.name}>
 //     <a href='/'>Click me</a>
 //     `);
 //   });
-  
+
 //   app.get("/help", (req, res) => {
 //     res.send("Hello , this is help page");
 //   });
@@ -150,7 +149,6 @@ app.get("*", (req, res) => {
 
 app.listen(5000);
 
-
 const express = require("express");
 const reqFilter = require("./reqFilter");
 const route = express.Router();
@@ -172,3 +170,51 @@ app.use("/", route);
 app.listen(5000, () => {
   console.log("running on port 5000");
 });
+
+// using mongoose
+const mongoose = require("mongoose");
+mongoose.connect("mongodb://localhost:27017/e-comm");
+const ProductsSchema = new mongoose.Schema({
+  name: String,
+  price: Number,
+  brand: String,
+  category: String,
+});
+
+const saveInDB = async () => {
+  const ProductsModel = new mongoose.model("products", ProductsSchema);
+  let data = new ProductsModel({
+    name: "sandesh",
+    price: 250,
+    brand: "Realme",
+    category: "mobile",
+  });
+  let result = await data.save();
+  console.log(result);
+};
+
+const updateInDB = async () => {
+  let Product = new mongoose.model("products", ProductsSchema);
+  let data = await Product.updateOne(
+    { name: "iPhone01" },
+    {
+      $set: { price: 7000 },
+    }
+  );
+  //   data.save();
+  console.log(data);
+};
+
+const deleteInDB = async () => {
+  let Product = new mongoose.model("products", ProductsSchema);
+  let data = await Product.deleteMany({ name: "vivo v12 pro" });
+  console.log(data);
+};
+
+deleteInDB();
+const findInDB = async () => {
+  let Product = new mongoose.model("products", ProductsSchema);
+  let data = await Product.find();
+  console.log(data);
+};
+findInDB();
